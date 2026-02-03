@@ -1364,6 +1364,134 @@
         let altGrPressed = false;
         let shiftPressed = false;
         let asteriskPressed = false;
+        let saveTimeout; // Para debounce
+        const rateLimits = {};
+
+        // GUARDAR en caché
+        function guardarEnCache(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                localStorage.setItem('cache_timestamp', Date.now());
+                console.log('✅ Guardado en caché:', key);
+            } catch (error) {
+                console.error('Error guardando caché:', error);
+            }
+        }
+        
+        // LEER de caché
+        function leerDeCache(key) {
+            try {
+                const data = localStorage.getItem(key);
+                if (data) {
+                    console.log('✅ Leído de caché:', key);
+                    return JSON.parse(data);
+                }
+            } catch (error) {
+                console.error('Error leyendo caché:', error);
+            }
+            return null;
+        }
+        
+        // LIMPIAR caché viejo (más de 1 hora)
+        function limpiarCacheViejo() {
+            const ultimaActualizacion = localStorage.getItem('cache_timestamp');
+            const ahora = Date.now();
+            
+            if (!ultimaActualizacion || ahora - ultimaActualizacion > 3600000) {
+                localStorage.clear();
+                localStorage.setItem('cache_timestamp', ahora);
+                console.log('🧹 Caché limpiado');
+            }
+        }
+        
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // ✅ VALIDACIÓN DE DATOS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        function validarDatosUsuario(data) {
+            const errores = [];
+            
+            // Validar ID
+            if (!data.Numero_ID || data.Numero_ID.length > 10) {
+                errores.push('ID inválido');
+            }
+            
+            // Validar nombre
+            if (!data.Nombre_frito || data.Nombre_frito.length < 2) {
+                errores.push('Nombre debe tener mínimo 2 caracteres');
+            }
+            
+            if (data.Nombre_frito.length > 50) {
+                errores.push('Nombre muy largo (máximo 50 caracteres)');
+            }
+            
+            // Validar emoji
+            if (data.Emoji && data.Emoji.length > 2) {
+                errores.push('Emoji debe ser 1-2 caracteres');
+            }
+            
+            // Validar score
+            if (data.Total_score < 0) {
+                errores.push('Score no puede ser negativo');
+            }
+            
+            if (data.Total_score > 999999) {
+                errores.push('Score máximo: 999,999');
+            }
+            
+            // Validar cumpleaños (formato DD/MM/AAAA)
+            const regexFecha = /^\d{2}\/\d{2}\/\d{4}$/;
+            if (data.Cumpleaños && !regexFecha.test(data.Cumpleaños)) {
+                errores.push('Cumpleaños debe ser DD/MM/AAAA (ejemplo: 15/03/2005)');
+            }
+            
+            return {
+                valido: errores.length === 0,
+                errores: errores
+            };
+        }
+        
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 🚦 RATE LIMITING
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        function checkRateLimit(userId) {
+            const ahora = Date.now();
+            const limite = rateLimits[userId] || { count: 0, time: ahora };
+            
+            // Si pasó 1 minuto, resetear contador
+            if (ahora - limite.time > 60000) {
+                limite.count = 0;
+                limite.time = ahora;
+            }
+            
+            // Si excedió 10 intentos en 1 minuto
+            if (limite.count >= 10) {
+                return false; // Bloqueado
+            }
+            
+            // Incrementar contador
+            limite.count++;
+            rateLimits[userId] = limite;
+            return true; // Permitido
+        }
+        
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // ⏱️ DEBOUNCE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        function debounce(func, delay) {
+            return function() {
+                const context = this;
+                const args = arguments;
+                
+                clearTimeout(saveTimeout);
+                
+                saveTimeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, delay);
+            };
+        }
 
         // FAQ - Reordenado según prioridad
         const faqData = [
@@ -1532,6 +1660,7 @@
                 currentPlayer.Descuento_Frito.split(',').length
             ].reduce((a, b) => a + b, 0);
             document.getElementById('profileActivePrizes').value = totalPrizes + ' premios';
+            guardarEnCache('playersData', playersData);
         }
 
         function animateScore(start, end) {
@@ -1572,20 +1701,41 @@
 
         function saveProfile() {
             if (!currentPlayer) return;
+            
+            // ⭐ RATE LIMITING
+            if (!checkRateLimit(currentPlayer.Numero_ID)) {
+                showNotification('⚠️ Demasiados intentos. Espera 1 minuto.');
+                return;
+            }
 
             const newName = document.getElementById('profileName').value.trim();
             const newEmoji = document.getElementById('profileEmoji').value.trim();
             const newBirthday = document.getElementById('profileBirthday').value.trim();
 
-            if (!newName) {
-                showNotification('⚠️ El nombre no puede estar vacío');
+            // ⭐ VALIDACIÓN
+            const datosTemporales = {
+                ...currentPlayer,
+                Nombre_frito: newName,
+                Emoji: newEmoji,
+                Cumpleaños: newBirthday
+            };
+            
+            const validacion = validarDatosUsuario(datosTemporales);
+            
+            if (!validacion.valido) {
+                const mensajeError = validacion.errores.join('\n• ');
+                showNotification('❌ Errores:\n• ' + mensajeError);
                 return;
             }
 
+            // Si llegó aquí, datos válidos - guardar
             currentPlayer.Nombre_frito = newName;
             currentPlayer.Emoji = newEmoji;
             currentPlayer.Cumpleaños = newBirthday;
             playersData[currentPlayer.Numero_ID] = currentPlayer;
+            
+            // ⭐ GUARDAR EN CACHÉ
+            guardarEnCache('playersData', playersData);
 
             showNotification('✅ ¡Cambios guardados!');
         }
@@ -1599,17 +1749,15 @@
                 showNotification('🚫 Demasiados intentos. Recarga la página.');
                 return;
             }
-    
+            // ⭐ PEDIR PASSWORD
             const password = prompt('🔐 Password de Administrador:');
             
             if (password !== '6436GF') {
-                intentosAdmin++;
                 showNotification('❌ Password incorrecto');
                 return;
             }
-
-            // Password correcto - resetear intentos
-            intentosAdmin = 0;
+            
+            // Password correcto
             document.getElementById('adminPanel').classList.add('active');
             refreshAdminTable();
             showNotification('🔐 Modo Administrador Activado');
@@ -1642,16 +1790,21 @@
             });
 
             tbody.querySelectorAll('input').forEach(input => {
-                input.addEventListener('change', function() {
+                // ⭐ USAR DEBOUNCE en lugar de 'change'
+                input.addEventListener('input', debounce(function() {
                     const playerId = this.dataset.id;
                     const field = this.dataset.field;
                     const value = this.type === 'number' ? parseInt(this.value) : this.value;
                     
                     if (playersData[playerId]) {
                         playersData[playerId][field] = value;
-                        showNotification('✅ Campo actualizado');
+                        
+                        // Guardar en caché
+                        guardarEnCache('playersData', playersData);
+                        
+                        showNotification('💾 Guardando...');
                     }
-                });
+                }, 1500)); // Espera 1.5 segundo después de que el usuario termine de escribir
             });
         }
 
@@ -1832,12 +1985,40 @@
             });
         });
 
-        // Inicializar
-        createStars();
+        // ========================================
+        // ⭐ INICIALIZACIÓN CON LAZY LOADING ⭐
+        // ========================================
         
-        setTimeout(() => {
-            showNotification('✨ ¡Bienvenidx a Gatitxs Gaming!');
-        }, 500);
+        window.addEventListener('load', function() {
+            console.log('🚀 Iniciando Gatitxs Gaming...');
+            
+            // 1. ⭐ LIMPIAR CACHÉ VIEJO
+            limpiarCacheViejo();
+            
+            // 2. ⭐ CARGAR DESDE CACHÉ PRIMERO (rápido)
+            const cachedData = leerDeCache('playersData');
+            if (cachedData) {
+                playersData = cachedData;
+                console.log('✅ Datos cargados desde caché (rápido)');
+            }
+            
+            // 3. Crear estrellas (visual)
+            createStars();
+            
+            // 4. Mensaje de bienvenida
+            setTimeout(() => {
+                showNotification('✨ ¡Bienvenidx a Gatitxs Gaming!');
+            }, 500);
+            
+            // 5. ⭐ ACTUALIZAR DATOS EN BACKGROUND (lazy loading)
+            // Esto corre invisible mientras el usuario ya puede usar el sitio
+            setTimeout(() => {
+                console.log('🔄 Actualizando datos en background...');
+                // Aquí podrías cargar datos frescos de Google Sheets
+                // Por ahora solo actualizamos el timestamp del caché
+                guardarEnCache('playersData', playersData);
+            }, 2000);
+		});
     </script>
 </body>
 </html>
