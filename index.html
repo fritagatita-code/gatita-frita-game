@@ -1591,7 +1591,25 @@
         }
 
         // Admin Panel
+        let intentosAdmin = 0;
+
         function activateAdminPanel() {
+            // Límite de 3 intentos
+            if (intentosAdmin >= 3) {
+                showNotification('🚫 Demasiados intentos. Recarga la página.');
+                return;
+            }
+    
+            const password = prompt('🔐 Password de Administrador:');
+            
+            if (password !== '6436GF') {
+                intentosAdmin++;
+                showNotification('❌ Password incorrecto');
+                return;
+            }
+
+            // Password correcto - resetear intentos
+            intentosAdmin = 0;
             document.getElementById('adminPanel').classList.add('active');
             refreshAdminTable();
             showNotification('🔐 Modo Administrador Activado');
