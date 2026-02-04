@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gatitxs Gaming - Gatita Frita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Colores principales */
+            --rosa-claro: #FCDCF9;
+            --morado-uva: #B24592;
+            --rosa-chicle: #FF4083;
+            --fucsia: #FF4DF6;
+            --morado-nocturno: #411B87;
+            --cyber-oscuro: #1a0033;
+            --morado-admin: #2d1055;
+            
+            /* Gradientes */
+            --gradient-title: linear-gradient(135deg, #B24592, #FF4083);
+            --gradient-bg: linear-gradient(180deg, #411B87 0%, #1a0033 100%);
+            --gradient-section: linear-gradient(135deg, rgba(178, 69, 146, 0.2), rgba(255, 64, 131, 0.2));
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--gradient-bg);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Estrellas de fondo */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Decoraciones flotantes */
+        .float-decoration {
+            position: fixed;
+            font-size: 2.5rem;
+            opacity: 0.1;
+            animation: float 8s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            background: var(--gradient-title);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            animation: titleGlow 3s ease-in-out infinite;
+            letter-spacing: -1px;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 77, 246, 0.4)); }
+            50% { filter: drop-shadow(0 0 30px rgba(178, 69, 146, 0.6)); }
+        }
+
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--rosa-claro);
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+        }
+
+        /* Menú hamburguesa */
+        .menu-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--morado-uva), var(--rosa-chicle));
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 5px 20px rgba(255, 64, 131, 0.5);
+            transition: all 0.3s;
+        }
+
+        .menu-button.active {
+            display: flex;
+        }
+
+        .menu-button span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .menu-button:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(255, 64, 131, 0.7);
+        }
+
+        .menu-button.open span:nth-child(1) {
+            transform: rotate(45deg) translateY(8px);
+        }
+
+        .menu-button.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-button.open span:nth-child(3) {
+            transform: rotate(-45deg) translateY(-8px);
+        }
+
+        /* Menú overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--morado-nocturno), var(--cyber-oscuro));
+            z-index: 1000;
+            padding: 100px 25px 25px;
+            transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .menu-overlay.open {
+            left: 0;
+        }
+
+        .menu-item {
+            background: var(--gradient-section);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--rosa-chicle);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 77, 246, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .menu-item:hover::before {
+            left: 100%;
+        }
+
+        .menu-item:hover {
+            transform: translateX(10px);
+            border-color: var(--fucsia);
+            box-shadow: 0 5px 20px rgba(255, 77, 246, 0.4);
+        }
+
+        .menu-icon {
+            font-size: 1.8rem;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .menu-item h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--fucsia);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .menu-item p {
+            color: var(--rosa-claro);
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Secciones */
+        .section {
+            background: linear-gradient(135deg, rgba(178, 69, 146, 0.15), rgba(65, 27, 135, 0.3));
+            backdrop-filter: blur(15px);
+            border: 3px solid var(--morado-uva);
+            border-radius: 30px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 40px rgba(178, 69, 146, 0.3);
+            transition: all 0.4s;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .section > * {
+            margin-bottom: 1.5rem;
+        }
+
+        .section > *:last-child {
+            margin-bottom: 0;
+        }
+
+        .section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 50px rgba(178, 69, 146, 0.5);
+            border-color: var(--rosa-chicle);
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            background: var(--gradient-title);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* Iconos SVG personalizados */
+        .icon-saturn {
+            width: 40px;
+            height: 40px;
+            fill: currentColor;
+        }
+
+        .icon-star {
+            width: 35px;
+            height: 35px;
+            fill: currentColor;
+        }
+
+        .icon-gift {
+            width: 35px;
+            height: 35px;
+            fill: currentColor;
+        }
+
+        .icon-cat {
+            width: 35px;
+            height: 35px;
+            fill: currentColor;
+        }
+
+        .icon-key {
+            width: 35px;
+            height: 35px;
+            fill: currentColor;
+        }
+
+        /* Sección de búsqueda */
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 250px;
+            padding: 18px 25px;
+            border: 3px solid var(--morado-uva);
+            border-radius: 30px;
+            background: rgba(252, 220, 249, 0.95);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--morado-nocturno);
+            outline: none;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--fucsia);
+            background: white;
+            box-shadow: 0 0 25px rgba(255, 77, 246, 0.5);
+            transform: scale(1.02);
+        }
+
+        button {
+            padding: 18px 40px;
+            background: var(--gradient-title);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(255, 64, 131, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 64, 131, 0.6);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Saludo */
+        .greeting {
+            text-align: center;
+            margin: 2rem 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .greeting h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--fucsia);
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .greeting h4 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            color: var(--rosa-claro);
+            font-size: clamp(1rem, 3vw, 1.3rem);
+        }
+
+        .greeting .cat-wave {
+            font-size: 3rem;
+            display: inline-block;
+            animation: wave 1.5s infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+
+        /* Sección de puntaje */
+        .score-section {
+            text-align: center;
+            padding: 3.5rem;
+            background: linear-gradient(135deg, rgba(255, 77, 246, 0.15), rgba(178, 69, 146, 0.25));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-display {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: clamp(4rem, 12vw, 7rem);
+            background: var(--gradient-title);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: scoreGlow 2.5s ease-in-out infinite;
+            position: relative;
+            display: inline-block;
+            letter-spacing: -2px;
+        }
+
+        @keyframes scoreGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 25px rgba(255, 77, 246, 0.8));
+                transform: scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 45px rgba(255, 77, 246, 1));
+                transform: scale(1.05);
+            }
+        }
+
+        .score-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--rosa-claro);
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin-bottom: 1.5rem;
+        }
+
+        .score-message {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--fucsia);
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            margin-top: 1.5rem;
+        }
+
+        /* Estrellas fugaces en el score */
+        .shooting-star {
+            position: absolute;
+            font-size: 2rem;
+            animation: shoot 3s infinite ease-in-out;
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        @keyframes shoot {
+            0% { 
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0;
+            }
+            25% { 
+                opacity: 1;
+            }
+            50% { 
+                transform: translate(100px, -100px) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translate(200px, -200px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Sección de premios */
+        .prizes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .prize-column {
+            background: rgba(255, 255, 255, 0.05);
+            border: 3px solid;
+            border-radius: 25px;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .prize-column:nth-child(1) {
+            border-color: var(--fucsia);
+        }
+
+        .prize-column:nth-child(2) {
+            border-color: var(--rosa-chicle);
+        }
+
+        .prize-column:nth-child(3) {
+            border-color: var(--morado-uva);
+        }
+
+        .prize-column:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 77, 246, 0.4);
+        }
+
+        .prize-header {
+            padding: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            text-align: center;
+            user-select: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .prize-column:nth-child(1) .prize-header {
+            background: linear-gradient(135deg, var(--fucsia), var(--rosa-chicle));
+        }
+
+        .prize-column:nth-child(2) .prize-header {
+            background: linear-gradient(135deg, var(--rosa-chicle), var(--morado-uva));
+        }
+
+        .prize-column:nth-child(3) .prize-header {
+            background: linear-gradient(135deg, var(--morado-uva), var(--morado-nocturno));
+        }
+
+        .prize-header:hover {
+            filter: brightness(1.2);
+        }
+
+        .prize-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 20px;
+        }
+
+        .prize-content.open {
+            max-height: 800px;
+            padding: 20px;
+        }
+
+        .prize-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 15px;
+            border-left: 5px solid;
+            font-size: 1rem;
+            line-height: 1.5;
+            transition: all 0.3s;
+        }
+
+        .prize-column:nth-child(1) .prize-item {
+            border-left-color: var(--fucsia);
+        }
+
+        .prize-column:nth-child(2) .prize-item {
+            border-left-color: var(--rosa-chicle);
+        }
+
+        .prize-column:nth-child(3) .prize-item {
+            border-left-color: var(--morado-uva);
+        }
+
+        .prize-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(10px);
+        }
+
+        /* Tarjeta de Credimiau */
+        .credimiau-card {
+            background: linear-gradient(135deg, var(--morado-uva), var(--morado-nocturno));
+            border: 2px solid var(--fucsia);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(178, 69, 146, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .credimiau-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            background: var(--gradient-title);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .credimiau-card p {
+            color: var(--rosa-claro);
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        /* Perfil */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+
+        .profile-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--morado-uva);
+            border-radius: 20px;
+            padding: 18px;
+            transition: all 0.3s;
+        }
+
+        .profile-field:hover {
+            border-color: var(--fucsia);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .profile-field label {
+            display: block;
+            color: var(--rosa-claro);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .profile-field input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--rosa-chicle);
+            border-radius: 15px;
+            background: rgba(252, 220, 249, 0.9);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            color: var(--morado-nocturno);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .profile-field input:focus {
+            background: white;
+            box-shadow: 0 0 15px rgba(255, 77, 246, 0.4);
+        }
+
+        .profile-field input:disabled {
+            background: rgba(255, 255, 255, 0.15);
+            cursor: not-allowed;
+            color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(178, 69, 146, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            background: linear-gradient(135deg, rgba(45, 16, 85, 0.95), rgba(26, 0, 51, 0.95));
+            border: 3px solid var(--fucsia);
+            box-shadow: 0 0 60px rgba(255, 77, 246, 0.8);
+        }
+
+        .admin-panel.active {
+            display: block;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .admin-controls button {
+            font-size: 0.95rem;
+        }
+
+        .admin-table {
+			width: 100%;
+			overflow-x: auto;
+			overflow-y: auto;
+			max-height: 600px; /* ⭐ NUEVO: Altura máxima */
+		}
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: rgba(26, 0, 51, 0.5);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid rgba(255, 77, 246, 0.2);
+        }
+
+        th {
+            background: var(--gradient-title);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td input {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--rosa-chicle);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .delete-btn {
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #ff4d4d, #cc0000);
+        }
+
+        .sort-btn {
+            background: linear-gradient(135deg, var(--morado-uva), var(--morado-nocturno));
+            margin-right: 10px;
+        }
+
+        /* Modales */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--morado-nocturno), var(--cyber-oscuro));
+            border: 3px solid var(--fucsia);
+            border-radius: 30px;
+            padding: 2.5rem;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--morado-uva), var(--rosa-chicle));
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0;
+            box-shadow: 0 5px 20px rgba(255, 64, 131, 0.5);
+        }
+
+        .modal-close span {
+            width: 24px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            position: absolute;
+        }
+
+        .modal-close span:nth-child(1) {
+            transform: rotate(45deg);
+        }
+
+        .modal-close span:nth-child(2) {
+            transform: rotate(-45deg);
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 25px rgba(255, 64, 131, 0.7);
+        }
+
+        /* FAQ */
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--rosa-chicle);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--fucsia);
+            transform: translateX(10px);
+        }
+
+        .faq-question {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--fucsia);
+            margin-bottom: 10px;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-answer {
+            color: var(--rosa-claro);
+            line-height: 1.7;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+            margin-top: 10px;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Notificaciones */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--gradient-title);
+            color: white;
+            padding: 18px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 64, 131, 0.6);
+            z-index: 3000;
+            animation: slideInRight 0.4s ease-out;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            max-width: 350px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .prizes-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+            
+            .menu-overlay {
+                width: 100%;
+                left: -100%;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--cyber-oscuro);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-title);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--fucsia), var(--rosa-chicle));
+        }
+    </style>
+</head>
+<body>
+    <!-- Estrellas -->
+    <div class="stars-container" id="starsContainer"></div>
+
+    <!-- Decoraciones -->
+    <div class="float-decoration" style="top: 8%; left: 5%; animation-delay: 0s;">🐱</div>
+    <div class="float-decoration" style="top: 15%; right: 8%; animation-delay: 1s;">🍟</div>
+    <div class="float-decoration" style="top: 55%; left: 7%; animation-delay: 2s;">⭐</div>
+    <div class="float-decoration" style="top: 65%; right: 6%; animation-delay: 1.5s;">✨</div>
+    <div class="float-decoration" style="top: 35%; right: 12%; animation-delay: 0.8s;">🐈</div>
+    <div class="float-decoration" style="top: 75%; left: 10%; animation-delay: 2.5s;">💫</div>
+
+    <!-- Menú hamburguesa -->
+    <button class="menu-button" id="menuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-item" onclick="logout()">
+            <span class="menu-icon">🚪</span>
+            <h4>¡Salir de aquí!</h4>
+            <p>Regresar al buscador de ID</p>
+        </div>
+        
+        <div class="menu-item" onclick="showSchedule()">
+            <span class="menu-icon">⏰</span>
+            <h4>Horarios</h4>
+            <p>Atención y envíos</p>
+        </div>
+        
+        <div class="menu-item" onclick="showScoreFrito()">
+            <span class="menu-icon">🎮</span>
+            <h4>Score Frito</h4>
+            <p>Panel de puntaje</p>
+        </div>
+        
+        <div class="menu-item" onclick="showFAQ()">
+            <span class="menu-icon">❓</span>
+            <h4>Dudas Felinas</h4>
+            <p>Preguntas frecuentes</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Gatitxs Gaming</h1>
+        <h2>¡Bienvenidx Gatitx Fritx!</h2>
+    </div>
+
+    <div class="container">
+        <!-- Sección Login -->
+        <div class="section" id="loginSection">
+            <h2 class="section-title">
+                <svg class="icon-key" viewBox="0 0 24 24">
+                    <path d="M12.65 10A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                </svg>
+                Acceso
+            </h2>
+            <div class="search-container">
+                <input type="text" id="playerIdInput" placeholder="Ingresa tu Player ID" />
+                <button onclick="unlockProfile()">Desbloquear</button>
+            </div>
+        </div>
+
+        <!-- Contenido desbloqueado -->
+        <div id="unlockedContent" class="hidden">
+            <!-- Saludo -->
+            <div class="greeting hidden" id="greeting">
+                <span class="cat-wave">😺</span>
+                <h3 id="greetingName">Holi!</h3>
+                <h4 id="greetingCode">Recuerda usar tu código de amigo</h4>
+            </div>
+
+            <!-- Puntaje -->
+            <div class="section score-section">
+                <div class="shooting-star" style="top: 10%; left: 10%; color: var(--fucsia);">✨</div>
+                <div class="shooting-star" style="top: 15%; right: 15%; color: var(--rosa-chicle); animation-delay: 1s;">⭐</div>
+                <div class="shooting-star" style="bottom: 20%; left: 20%; color: var(--fucsia); animation-delay: 2s;">💫</div>
+                
+                <svg class="icon-star" viewBox="0 0 24 24" style="color: var(--fucsia); margin-bottom: 1rem;">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                
+                <div class="score-label">Puntaje Total</div>
+                <div class="score-display" id="scoreDisplay">0</div>
+                <div class="score-message">¡Acumula más puntos Mágicos!</div>
+            </div>
+
+            <!-- Premios -->
+            <div class="section">
+                <h2 class="section-title">
+                    <svg class="icon-gift" viewBox="0 0 24 24">
+                        <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/>
+                    </svg>
+                    ¡PREMIOS!
+                </h2>
+                <div class="prizes-container">
+                    <div class="prize-column">
+                        <div class="prize-header" onclick="togglePrize(this)">
+                            ✨ Premios Mágicos
+                        </div>
+                        <div class="prize-content" id="magicalPrizes"></div>
+                    </div>
+                    
+                    <div class="prize-column">
+                        <div class="prize-header" onclick="togglePrize(this)">
+                            🍟 Descuentos Fritos
+                        </div>
+                        <div class="prize-content" id="fritosDiscounts"></div>
+                    </div>
+                    
+                    <div class="prize-column">
+                        <div class="prize-header" onclick="togglePrize(this)">
+                            💰 Credimiau
+                        </div>
+                        <div class="prize-content" id="credimiauContent">
+                            <div class="credimiau-card">
+                                <h3 id="credimiauAmount">0</h3>
+                                <p>Crédito disponible</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Perfil -->
+            <div class="section">
+                <h2 class="section-title">
+                    <svg class="icon-cat" viewBox="0 0 512 512">
+                        <path d="M288 192h-16v-16c0-8.8-7.2-16-16-16s-16 7.2-16 16v16h-16c-8.8 0-16 7.2-16 16s7.2 16 16 16h16v16c0 8.8 7.2 16 16 16s16-7.2 16-16v-16h16c8.8 0 16-7.2 16-16s-7.2-16-16-16zm160-80c-17.7 0-32 14.3-32 32v48c0 8.8 7.2 16 16 16s16-7.2 16-16v-48c0-8.8-7.2-16-16-16zm-32 0c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32v48c0 8.8 7.2 16 16 16s16-7.2 16-16v-48h256v48c0 8.8 7.2 16 16 16s16-7.2 16-16v-48zm-288 0c0-17.7-14.3-32-32-32s-32 14.3-32 32v48c0 8.8 7.2 16 16 16s16-7.2 16-16v-48c0-8.8 7.2-16 16-16zM256 416c-35.3 0-64-28.7-64-64h128c0 35.3-28.7 64-64 64z"/>
+                        <ellipse cx="176" cy="288" rx="16" ry="24"/>
+                        <ellipse cx="336" cy="288" rx="16" ry="24"/>
+                    </svg>
+                    Mi Perfil Felino
+                </h2>
+                <div class="profile-grid">
+                    <div class="profile-field">
+                        <label>🆔 Player ID</label>
+                        <input type="text" id="profileId" disabled />
+                    </div>
+                    <div class="profile-field">
+                        <label>📝 Nombre Frito</label>
+                        <input type="text" id="profileName" />
+                    </div>
+                    <div class="profile-field">
+                        <label>😺 Emoji</label>
+                        <input type="text" id="profileEmoji" maxlength="2" />
+                    </div>
+                    <div class="profile-field">
+                        <label>🤝 Friend Code</label>
+                        <input type="text" id="profileFriendCode" disabled />
+                    </div>
+                    <div class="profile-field">
+                        <label>🎁 Premios Activos</label>
+                        <input type="text" id="profileActivePrizes" disabled />
+                    </div>
+                    <div class="profile-field">
+                        <label>🌟 Total Score</label>
+                        <input type="text" id="profileScore" disabled />
+                    </div>
+                    <div class="profile-field">
+                        <label>🎂 Cumpleaños</label>
+                        <input type="text" id="profileBirthday" placeholder="DD/MM/AAAA" />
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="saveProfile()">💾 Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="section admin-panel" id="adminPanel">
+            <button class="modal-close" onclick="closeAdminPanel()" style="position: absolute; top: 20px; right: 20px;">
+                <span></span>
+                <span></span>
+            </button>
+            <h2 class="section-title">
+                <svg class="icon-key" viewBox="0 0 24 24">
+                    <path d="M12.65 10A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                </svg>
+                Panel de Administrador
+            </h2>
+            <div class="admin-controls">
+                <button onclick="addNewPlayer()">➕ Agregar Usuario</button>
+                <button onclick="refreshAdminTable()">🔄 Actualizar</button>
+                <button class="sort-btn" onclick="sortBy('Numero_ID')">🔤 ID</button>
+                <button class="sort-btn" onclick="sortBy('Friend_code')">📝 Friend_code</button>
+                <button class="sort-btn" onclick="sortBy('Cumpleaños')">🎂 Cumpleaños</button>
+            </div>
+            
+            <!-- ⭐ BUSCADOR -->
+            <div style="margin: 1rem 0; display: flex; gap: 1rem; align-items: center;">
+                <input 
+                    type="text" 
+                    id="searchAdminInput" 
+                    placeholder="🔍 Buscar por ID o Friend_code..."
+                    style="flex: 1; padding: 12px 20px; border-radius: 15px; border: 2px solid var(--fucsia); background: rgba(255, 255, 255, 0.1); color: white; font-family: 'Nunito', sans-serif;"
+                    oninput="filtrarTablaAdmin()"
+                />
+                <button onclick="limpiarFiltro()" style="padding: 12px 24px;">🔄 Ver Todos</button>
+            </div>
+            <div class="admin-table">
+                <table id="adminTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">ID</th>
+                            <th style="width: 120px;">Score</th>
+                            <th style="width: 200px;">Descuentos</th>
+                            <th style="width: 200px;">Premios</th>
+                            <th style="width: 100px;">Credimiau</th>
+                            <th style="width: 120px;">Friend Code</th>
+                            <th style="width: 150px;">Nombre</th>
+                            <th style="width: 60px;">Emoji</th>
+                            <th style="width: 120px;">Cumpleaños</th>
+                            <th style="width: 100px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Horarios -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('scheduleModal')">
+                <span></span>
+                <span></span>
+            </button>
+            <h2 class="section-title">⏰ Horarios de Atención</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">📅 Lunes a Sábados</div>
+                <div class="faq-answer" style="max-height: none;">
+                    <strong>Horario:</strong> 8:00 AM - 10:00 PM<br>
+                    <strong>Envíos:</strong> A domicilio incluidos<br>
+                    <strong>Atención:</strong> Al cliente disponible
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">📅 Domingos</div>
+                <div class="faq-answer" style="max-height: none;">
+                    <strong>Horario:</strong> 12:00 PM - 6:00 PM<br>
+                    <strong>Envíos:</strong> A domicilio (+$30 MXN)<br>
+                    <strong>Atención:</strong> Al cliente disponible
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1.5rem; background: var(--gradient-section); border: 2px solid var(--fucsia); border-radius: 20px; text-align: center;">
+                <p style="font-size: 1.2rem; color: var(--fucsia); font-family: 'Poppins', sans-serif; font-weight: 700; margin-bottom: 0.5rem;">
+                    ✨ ¡Bonus de Anticipación! ✨
+                </p>
+                <p style="font-size: 1rem; color: var(--rosa-claro); line-height: 1.6;">
+                    ¡Abónate <strong style="color: white;">15 puntos</strong> a tu tablero de premios por cada día que te anticipes entre tu ticket completado y tu día de entrega!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Score Frito -->
+    <div class="modal" id="scoreModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('scoreModal')">
+                <span></span>
+                <span></span>
+            </button>
+            <h2 class="section-title">🎮 Score Frito Dashboard</h2>
+            <div class="faq-item">
+                <div class="faq-question">Tu Progreso Felino</div>
+                <div class="faq-answer" style="max-height: none;" id="scoreDetails">
+                    Desbloquea tu perfil para ver tus estadísticas.
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem; padding: 2rem; background: var(--gradient-section); border-radius: 20px;">
+                <p style="font-size: 1.2rem; color: var(--fucsia); font-family: 'Poppins', sans-serif; font-weight: 600;">
+                    ¡Sigue jugando y ronrroneando! 😸✨
+                </p>
+                <p style="font-size: 1rem; color: var(--rosa-claro); margin-top: 1rem;">
+                    Cada interacción te acerca más a premios increíbles
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal FAQ -->
+    <div class="modal" id="faqModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('faqModal')">
+                <span></span>
+                <span></span>
+            </button>
+            <h2 class="section-title">❓ Dudas Felinas</h2>
+            
+            <div id="faqList"></div>
+
+            <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 3px solid var(--rosa-chicle);">
+                <label style="display: block; color: var(--rosa-claro); margin-bottom: 12px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.1rem;">
+                    ¿Tienes otra pregunta? ¡Déjala aquí! 💬
+                </label>
+                <input type="text" id="faqInput" placeholder="Escribe tu pregunta..." style="width: 100%; padding: 15px 20px; border-radius: 20px; border: 3px solid var(--rosa-chicle); background: rgba(252, 220, 249, 0.95); color: var(--morado-nocturno); font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 600;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Admin FAQ -->
+    <div class="modal" id="faqAdminModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('faqAdminModal')">
+                <span></span>
+                <span></span>
+            </button>
+            <h2 class="section-title">
+                <svg class="icon-key" viewBox="0 0 24 24">
+                    <path d="M12.65 10A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                </svg>
+                Admin: Preguntas de Usuarios
+            </h2>
+            <div id="userQuestions"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // CONFIGURACIÓN GOOGLE SHEETS
+        // ========================================
+        
+        // INSTRUCCIONES:
+        // 1. Crea una Google Sheet con estas hojas:
+        //    - "Usuarios" (con las columnas abajo)
+        //    - "Preguntas" (para FAQ de usuarios)
+        
+        // 2. Publica como CSV:
+        //    Archivo → Compartir → Publicar en la web → Hoja "Usuarios" → CSV
+        //    Copia el link y ponlo en SHEET_URL_USUARIOS
+        
+        // 3. Repite para hoja "Preguntas" y pon el link en SHEET_URL_PREGUNTAS
+
+        const SHEET_URL_USUARIOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSgh9JdGNM1F28-LzOXyhfZm2FfDPSqovShSRycdczrfooJN3_-7lW_YQ3N4g4UEfOkA1MShKLXOR6S/pub?gid=2079433221&single=true&output=csv';
+        const SHEET_URL_PREGUNTAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSgh9JdGNM1F28-LzOXyhfZm2FfDPSqovShSRycdczrfooJN3_-7lW_YQ3N4g4UEfOkA1MShKLXOR6S/pub?gid=2108877324&single=true&output=csv';
+        
+        // Link para editar
+        const SHEET_EDIT_URL = 'https://docs.google.com/spreadsheets/d/1JtNbSMaVOwxTRA-DzkY2DAoLibezJOx-xcYlr6-Spzs/edit';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzioMaZrAzUOOTcrJbu1zeBHkV1f3tBf4yNWLaA7fIClyV8DhAXi3zyol4SBDKSpd_D2w/exec';
+        
+        // ⚙️ CONFIGURACIÓN ADMIN
+        const PASSWORD_ADMIN = '6436GF'; // Cambia esto
+
+        // ========================================
+        // BASE DE DATOS LOCAL (EJEMPLO)
+        // ========================================
+        
+        let playersData = {
+            "6436GF": {
+                Numero_ID: "6436GF",
+                Total_score: 9999,
+                Descuento_Frito: "Admin privileges",
+                Premios_magicos: "All access",
+                Credimiau: "Unlimited",
+                Friend_code: "ADMIN2024",
+                Cumpleaños: "01/01/2000",
+                Nombre_frito: "Admin Gatita",
+                Emoji: "👑"
+            },
+            "0001GF": {
+                Numero_ID: "0001GF",
+                Total_score: 1250,
+                Descuento_Frito: "20% OFF próximo pedido, 2x1 papas",
+                Premios_magicos: "Peluche GF, Sticker pack limitado",
+                Credimiau: "350",
+                Friend_code: "LUNA2024",
+                Cumpleaños: "15/03/2005",
+                Nombre_frito: "Luna Frita",
+                Emoji: "🐱"
+            },
+            "0002GF": {
+                Numero_ID: "0002GF",
+                Total_score: 890,
+                Descuento_Frito: "15% OFF próxima compra",
+                Premios_magicos: "Pin coleccionable, Llavero GF",
+                Credimiau: "200",
+                Friend_code: "MICHI2024",
+                Cumpleaños: "22/07/2006",
+                Nombre_frito: "Michi Supreme",
+                Emoji: "😺"
+            }
+        };
+
+        let currentPlayer = null;
+        let userQuestions = [];
+        let altGrPressed = false;
+        let shiftPressed = false;
+        let asteriskPressed = false;
+        let saveTimeout; // Para debounce
+        const rateLimits = {};
+
+        // GUARDAR en caché
+        function guardarEnCache(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                localStorage.setItem('cache_timestamp', Date.now());
+                console.log('✅ Guardado en caché:', key);
+            } catch (error) {
+                console.error('Error guardando caché:', error);
+            }
+        }
+        
+        // LEER de caché
+        function leerDeCache(key) {
+            try {
+                const data = localStorage.getItem(key);
+                if (data) {
+                    console.log('✅ Leído de caché:', key);
+                    return JSON.parse(data);
+                }
+            } catch (error) {
+                console.error('Error leyendo caché:', error);
+            }
+            return null;
+        }
+        
+        // LIMPIAR caché viejo (más de 1 hora)
+        function limpiarCacheViejo() {
+            const ultimaActualizacion = localStorage.getItem('cache_timestamp');
+            const ahora = Date.now();
+            
+            if (!ultimaActualizacion || ahora - ultimaActualizacion > 3600000) {
+                localStorage.clear();
+                localStorage.setItem('cache_timestamp', ahora);
+                console.log('🧹 Caché limpiado');
+            }
+        }
+        
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // ✅ VALIDACIÓN DE DATOS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        function validarDatosUsuario(data) {
+            const errores = [];
+            
+            // Validar ID
+            if (!data.Numero_ID || data.Numero_ID.length > 10) {
+                errores.push('ID inválido');
+            }
+            
+            // Validar nombre
+            if (!data.Nombre_frito || data.Nombre_frito.length < 2) {
+                errores.push('Nombre debe tener mínimo 2 caracteres');
+            }
+            
+            if (data.Nombre_frito.length > 50) {
+                errores.push('Nombre muy largo (máximo 50 caracteres)');
+            }
+            
+            // Validar emoji
+            if (data.Emoji && data.Emoji.length > 2) {
+                errores.push('Emoji debe ser 1-2 caracteres');
+            }
+            
+            // Validar score
+            if (data.Total_score < 0) {
+                errores.push('Score no puede ser negativo');
+            }
+            
+            if (data.Total_score > 999999) {
+                errores.push('Score máximo: 999,999');
+            }
+            
+            // Validar cumpleaños (formato DD/MM/AAAA)
+            const regexFecha = /^\d{2}\/\d{2}\/\d{4}$/;
+            if (data.Cumpleaños && !regexFecha.test(data.Cumpleaños)) {
+                errores.push('Cumpleaños debe ser DD/MM/AAAA (ejemplo: 15/03/2005)');
+            }
+            
+            return {
+                valido: errores.length === 0,
+                errores: errores
+            };
+        }
+        
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 🚦 RATE LIMITING
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        function checkRateLimit(userId) {
+            const ahora = Date.now();
+            const limite = rateLimits[userId] || { count: 0, time: ahora };
+            
+            // Si pasó 1 minuto, resetear contador
+            if (ahora - limite.time > 60000) {
+                limite.count = 0;
+                limite.time = ahora;
+            }
+            
+            // Si excedió 10 intentos en 1 minuto
+            if (limite.count >= 10) {
+                return false; // Bloqueado
+            }
+            
+            // Incrementar contador
+            limite.count++;
+            rateLimits[userId] = limite;
+            return true; // Permitido
+        }
+        
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // ⏱️ DEBOUNCE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        function debounce(func, delay) {
+            return function() {
+                const context = this;
+                const args = arguments;
+                
+                clearTimeout(saveTimeout);
+                
+                saveTimeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, delay);
+            };
+        }
+
+        // FAQ - Reordenado según prioridad
+        const faqData = [
+            {
+                q: "¿Cómo canjeo mis premios?",
+                a: "Visita la sección de premios, escoge el que quieras canjear y escríbele a GF para reclamar. ¡Tu premio estará listo en tu próxima orden!"
+            },
+            {
+                q: "¿Qué es esta página?",
+                a: "Es tu tablero de puntos y premios que vas generando al jugar con GatitaFrita."
+            },
+            {
+                q: "¿Cómo funciona el sitio?",
+                a: "Ingresa tu Player ID para desbloquear tu perfil y ver tus premios acumulados."
+            },
+            {
+                q: "¿Cómo gano puntos?",
+                a: "Jugando con Gatita Frita e interactuando con la comunidad fritx."
+            },
+            {
+                q: "¿Cómo acumulo puntos?",
+                a: "¡Cada compra te da puntos mágicos! Por cada $1 MXN gastados, recibes 1 punto. ¡Además hay bonos especiales en días festivos!"
+            },
+            {
+                q: "¿Los puntos expiran?",
+                a: "¡Los puntos duran 1 año! Pero no te preocupes, te avisaremos antes de que expiren para que los uses."
+            },
+            {
+                q: "¿Cómo invitar a un amigo a jugar?",
+                a: "Comparte a tu amigo tu Friend Code + el contacto de GF para que pueda dar tu código de referencia. Obtiene 30% OFF en su envío y tú obtienes un regalo ¡Entre más amigos invites, mejores premios podrás obtener!"
+            },
+            {
+                q: "¿Dónde puedo encontrar su catálogo?",
+                a: "Solicita el catálogo de temporada por medio del número oficial de GF"
+            },
+            {
+                q: "¿Tienen descuentos o promociones?",
+                a: "¡Sí! Encuentra promociones y descuentos en el canal oficial de GF"
+            },
+            {
+                q: "¿Puedo encontrar algo más que no esté en el menú con GF?",
+                a: "No, solo hay disponibilidad lo que se encuentra en menú y tampoco sabemos dónde conseguirlo :("
+            },
+            {
+                q: "¿Qué es el QuizzFritx?",
+                a: "Es un juego de trivia de opción múltiple donde se pueden ganar premios en el canal oficial de GF en WA, ¡pide que te unan!"
+            },
+            {
+                q: "¿Qué son los Credimiau?",
+                a: "Es el crédito a favor que tienes con GF, ya sea en dinero o en productos, puedes solicitarlos en cualquier momento."
+            },
+            {
+                q: "¿Puedo transferir puntos?",
+                a: "¡No! Pero puedes compartir premios con tus amigas usando su Friend Code. Comparte el amor felino."
+            },
+            {
+                q: "¿Hay envío a domicilio?",
+                a: "Sí, dentro de CDMX los envíos son a domicilio según tu zona es la tarifa de precio para el repartidor"
+            },
+            {
+                q: "¿Formas de pago?",
+                a: "Se puede realizar el pago en efectivo o por medio de transferencia."
+            }
+        ];
+
+        // ========================================
+        // FUNCIONES PRINCIPALES
+        // ========================================
+
+        function createStars() {
+            const container = document.getElementById('starsContainer');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // Detectar combinaciones de teclas
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'AltGraph' || e.keyCode === 225) {
+                altGrPressed = true;
+            }
+            if (e.key === 'Shift') {
+                shiftPressed = true;
+            }
+            if (e.key === '*') {
+                asteriskPressed = true;
+                
+                // AltGr + * = Admin Panel
+                if (altGrPressed) {
+                    activateAdminPanel();
+                }
+                
+                // Shift + * = FAQ Admin
+                if (shiftPressed) {
+                    showFAQAdmin();
+                }
+            }
+        });
+
+        document.addEventListener('keyup', function(e) {
+            if (e.key === 'AltGraph' || e.keyCode === 225) {
+                altGrPressed = false;
+            }
+            if (e.key === 'Shift') {
+                shiftPressed = false;
+            }
+            if (e.key === '*') {
+                asteriskPressed = false;
+            }
+        });
+
+        // Desbloquear perfil
+        function unlockProfile() {
+            const playerId = document.getElementById('playerIdInput').value.trim();
+            
+            if (!playerId) {
+                showNotification('⚠️ Por favor ingresa tu Player ID');
+                return;
+            }
+
+            if (playerId === '6436GF') {
+                activateAdminPanel();
+            }
+
+            if (playersData[playerId]) {
+                currentPlayer = playersData[playerId];
+                loadPlayerData();
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('unlockedContent').classList.remove('hidden');
+                document.getElementById('greeting').classList.remove('hidden');
+                document.getElementById('menuBtn').classList.add('active');
+                
+                // Actualizar saludo
+                document.getElementById('greetingName').textContent = `Holi ${currentPlayer.Nombre_frito}! 😺`;
+                document.getElementById('greetingCode').innerHTML = `Recuerda usar el código de amigo <span style="color: var(--fucsia); font-weight: 800;">${currentPlayer.Friend_code}</span>`;
+                
+                showNotification('✨ ¡Bienvenidx ' + currentPlayer.Nombre_frito + '!');
+            } else {
+                showNotification('❌ Player ID no encontrado');
+            }
+        }
+
+        // Cargar datos del jugador
+        function loadPlayerData() {
+            if (!currentPlayer) return;
+
+            animateScore(0, currentPlayer.Total_score);
+            loadPrizes('magicalPrizes', currentPlayer.Premios_magicos);
+            loadPrizes('fritosDiscounts', currentPlayer.Descuento_Frito);
+            
+            document.getElementById('credimiauAmount').textContent = currentPlayer.Credimiau;
+            document.getElementById('profileId').value = currentPlayer.Numero_ID;
+            document.getElementById('profileName').value = currentPlayer.Nombre_frito;
+            document.getElementById('profileEmoji').value = currentPlayer.Emoji;
+            document.getElementById('profileFriendCode').value = currentPlayer.Friend_code;
+            document.getElementById('profileScore').value = currentPlayer.Total_score;
+            document.getElementById('profileBirthday').value = currentPlayer.Cumpleaños;
+            
+            const totalPrizes = [
+                currentPlayer.Premios_magicos.split(',').length,
+                currentPlayer.Descuento_Frito.split(',').length
+            ].reduce((a, b) => a + b, 0);
+            document.getElementById('profileActivePrizes').value = totalPrizes + ' premios';
+            guardarEnCache('playersData', playersData);
+        }
+
+        function animateScore(start, end) {
+            const element = document.getElementById('scoreDisplay');
+            const duration = 2000;
+            const increment = (end - start) / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current);
+            }, 16);
+        }
+
+        function loadPrizes(containerId, prizesText) {
+            const container = document.getElementById(containerId);
+            const prizes = prizesText.split(',').map(p => p.trim());
+            
+            container.innerHTML = prizes.map(prize => 
+                `<div class="prize-item">${prize}</div>`
+            ).join('');
+        }
+
+        function togglePrize(header) {
+            const content = header.nextElementSibling;
+            const isOpen = content.classList.contains('open');
+            
+            document.querySelectorAll('.prize-content').forEach(c => c.classList.remove('open'));
+            
+            if (!isOpen) {
+                content.classList.add('open');
+            }
+        }
+
+        function saveProfile() {
+            if (!currentPlayer) return;
+            
+            // ⭐ RATE LIMITING
+            if (!checkRateLimit(currentPlayer.Numero_ID)) {
+                showNotification('⚠️ Demasiados intentos. Espera 1 minuto.');
+                return;
+            }
+
+            const newName = document.getElementById('profileName').value.trim();
+            const newEmoji = document.getElementById('profileEmoji').value.trim();
+            const newBirthday = document.getElementById('profileBirthday').value.trim();
+
+            // ⭐ VALIDACIÓN
+            const datosTemporales = {
+                ...currentPlayer,
+                Nombre_frito: newName,
+                Emoji: newEmoji,
+                Cumpleaños: newBirthday
+            };
+            
+            const validacion = validarDatosUsuario(datosTemporales);
+            
+            if (!validacion.valido) {
+                const mensajeError = validacion.errores.join('\n• ');
+                showNotification('❌ Errores:\n• ' + mensajeError);
+                return;
+            }
+
+            // Si llegó aquí, datos válidos - guardar
+            currentPlayer.Nombre_frito = newName;
+            currentPlayer.Emoji = newEmoji;
+            currentPlayer.Cumpleaños = newBirthday;
+            playersData[currentPlayer.Numero_ID] = currentPlayer;
+            
+            // ⭐ GUARDAR EN CACHÉ
+            guardarEnCache('playersData', playersData);
+
+            showNotification('✅ ¡Cambios guardados!');
+        }
+
+        // Admin Panel
+        let intentosAdmin = 0;
+
+        function activateAdminPanel() {
+            // Límite de 3 intentos
+            if (intentosAdmin >= 3) {
+                showNotification('🚫 Demasiados intentos. Recarga la página.');
+                return;
+            }
+            
+            // ⭐ PEDIR PASSWORD
+            const password = prompt('🔐 Password de Administrador:');
+            
+            if (password !== PASSWORD_ADMIN) {
+                intentosAdmin++;
+                showNotification(`❌ Password incorrecto (${intentosAdmin}/3)`);
+                return;
+            }
+            
+            // Password correcto
+            document.getElementById('adminPanel').classList.add('active');
+            refreshAdminTable();
+            showNotification('🔐 Modo Administrador Activado');
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').classList.remove('active');
+            showNotification('🔒 Panel Admin Cerrado');
+        }
+
+		function refreshAdminTable() {
+			const tbody = document.getElementById('adminTableBody');
+			tbody.innerHTML = '';
+
+			Object.values(playersData).forEach(player => {
+				const row = document.createElement('tr');
+				row.innerHTML = `
+					<td><input type="text" value="${player.Numero_ID}" data-id="${player.Numero_ID}" data-field="Numero_ID"></td>
+					<td><input type="number" value="${player.Total_score}" data-id="${player.Numero_ID}" data-field="Total_score" style="width: 100%;"></td>
+					<td><input type="text" value="${player.Descuento_Frito}" data-id="${player.Numero_ID}" data-field="Descuento_Frito"></td>
+					<td><input type="text" value="${player.Premios_magicos}" data-id="${player.Numero_ID}" data-field="Premios_magicos"></td>
+					<td><input type="text" value="${player.Credimiau}" data-id="${player.Numero_ID}" data-field="Credimiau"></td>
+					<td><input type="text" value="${player.Friend_code}" data-id="${player.Numero_ID}" data-field="Friend_code"></td>
+					<td><input type="text" value="${player.Nombre_frito}" data-id="${player.Numero_ID}" data-field="Nombre_frito"></td>
+					<td><input type="text" value="${player.Emoji}" data-id="${player.Numero_ID}" data-field="Emoji" style="width: 50px;"></td>
+					<td><input type="text" value="${player.Cumpleaños}" data-id="${player.Numero_ID}" data-field="Cumpleaños"></td>
+					<td><button class="delete-btn" onclick="deletePlayer('${player.Numero_ID}')">🗑️</button></td>
+				`;
+				tbody.appendChild(row);
+			});
+
+			tbody.querySelectorAll('input').forEach(input => {
+				input.addEventListener('input', debounce(async function() {
+					const playerId = this.dataset.id;
+					const field = this.dataset.field;
+					const value = this.type === 'number' ? parseInt(this.value) : this.value;
+					
+					if (playersData[playerId]) {
+						playersData[playerId][field] = value;
+						
+						// ⭐ GUARDAR EN CACHÉ
+						guardarEnCache('playersData', playersData);
+						
+						// ⭐ GUARDAR EN GOOGLE SHEETS
+						await guardarEnGoogleSheets(playersData[playerId]);
+						
+						showNotification('💾 Guardado en Google Sheets');
+					}
+				}, 2000));
+			});
+		}
+
+		// ⭐ NUEVA FUNCIÓN: Guardar en Google Sheets
+		async function guardarEnGoogleSheets(playerData) {
+			if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbzioMaZrAzUOOTcrJbu1zeBHkV1f3tBf4yNWLaA7fIClyV8DhAXi3zyol4SBDKSpd_D2w/exec') {
+				console.warn('⚠️ Apps Script URL no configurada');
+				return false;
+			}
+			
+			try {
+				const response = await fetch(APPS_SCRIPT_URL, {
+					method: 'POST',
+					mode: 'no-cors',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						action: 'update',
+						sheet: 'Usuarios',
+						data: playerData
+					})
+				});
+				
+				console.log('✅ Guardado en Data-Base:', playerData.Numero_ID);
+				return true;
+			} catch (error) {
+				console.error('❌ Error guardando:', error);
+				return false;
+			}
+		}
+
+        function sortBy(field) {
+            const sorted = Object.entries(playersData).sort((a, b) => {
+                if (field === 'Total_score') {
+                    return b[1][field] - a[1][field];
+                }
+                return String(a[1][field]).localeCompare(String(b[1][field]));
+            });
+            
+            playersData = Object.fromEntries(sorted);
+            refreshAdminTable();
+            showNotification(`📊 Ordenado por ${field === 'Numero_ID' ? 'ID' : field === 'Nombre_frito' ? 'Nombre' : 'Cumpleaños'}`);
+        }
+
+        function addNewPlayer() {
+            const newId = prompt('Ingresa el nuevo Player ID (formato: ####GF):');
+            if (!newId) return;
+
+            if (playersData[newId]) {
+                showNotification('⚠️ Este ID ya existe');
+                return;
+            }
+
+            playersData[newId] = {
+                Numero_ID: newId,
+                Total_score: 0,
+                Descuento_Frito: 'Sin descuentos',
+                Premios_magicos: 'Sin premios',
+                Credimiau: '0',
+                Friend_code: 'NEW' + Date.now().toString().slice(-4),
+                Cumpleaños: '01/01/2000',
+                Nombre_frito: 'Nuevo Jugador',
+                Emoji: '🐱'
+            };
+
+            refreshAdminTable();
+            showNotification('✅ Usuario agregado');
+        }
+
+        function deletePlayer(playerId) {
+            if (confirm('¿Eliminar este usuario?')) {
+                delete playersData[playerId];
+                refreshAdminTable();
+                showNotification('🗑️ Usuario eliminado');
+            }
+        }
+
+        // Menú
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            const overlay = document.getElementById('menuOverlay');
+            const btn = this;
+            
+            overlay.classList.toggle('open');
+            btn.classList.toggle('open');
+        });
+
+        function logout() {
+            document.getElementById('unlockedContent').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('greeting').classList.add('hidden');
+            document.getElementById('menuBtn').classList.remove('active');
+            document.getElementById('menuOverlay').classList.remove('open');
+            document.getElementById('playerIdInput').value = '';
+            currentPlayer = null;
+            showNotification('👋 ¡Hasta pronto!');
+        }
+
+        function showSchedule() {
+            document.getElementById('scheduleModal').classList.add('active');
+            document.getElementById('menuOverlay').classList.remove('open');
+            document.getElementById('menuBtn').classList.remove('open');
+        }
+
+        function showScoreFrito() {
+            const modal = document.getElementById('scoreModal');
+            const details = document.getElementById('scoreDetails');
+            
+            if (currentPlayer) {
+                details.innerHTML = `
+                    <strong>Nombre:</strong> ${currentPlayer.Nombre_frito}<br>
+                    <strong>Score Total:</strong> ${currentPlayer.Total_score} puntos<br>
+                    <strong>Cumpleaños:</strong> ${currentPlayer.Cumpleaños}<br>
+                    <strong>Friend Code:</strong> ${currentPlayer.Friend_code}
+                `;
+            }
+            
+            modal.classList.add('active');
+            document.getElementById('menuOverlay').classList.remove('open');
+            document.getElementById('menuBtn').classList.remove('open');
+        }
+
+        function showFAQ() {
+            const list = document.getElementById('faqList');
+            list.innerHTML = faqData.map((faq, index) => `
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">${index + 1}. ${faq.q}</div>
+                    <div class="faq-answer">${faq.a}</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('faqModal').classList.add('active');
+            document.getElementById('menuOverlay').classList.remove('open');
+            document.getElementById('menuBtn').classList.remove('open');
+        }
+
+        function toggleFAQ(item) {
+            item.classList.toggle('open');
+        }
+
+        function showFAQAdmin() {
+            const modal = document.getElementById('faqAdminModal');
+            const container = document.getElementById('userQuestions');
+            
+            if (userQuestions.length === 0) {
+                container.innerHTML = '<div class="faq-item"><div class="faq-answer" style="max-height: none;">No hay preguntas pendientes.</div></div>';
+            } else {
+                container.innerHTML = userQuestions.map((q, index) => `
+                    <div class="faq-item">
+                        <div class="faq-question">Pregunta #${index + 1} - ${q.date}</div>
+                        <div class="faq-answer" style="max-height: none;">${q.question}</div>
+                        <button onclick="deleteQuestion(${index})" style="margin-top: 15px;" class="delete-btn">Eliminar</button>
+                    </div>
+                `).join('');
+            }
+            
+            modal.classList.add('active');
+            showNotification('🔐 Panel Admin FAQ activado');
+        }
+
+        function deleteQuestion(index) {
+            userQuestions.splice(index, 1);
+            showFAQAdmin();
+            showNotification('🗑️ Pregunta eliminada');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // FAQ Input
+        document.getElementById('faqInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const value = this.value.trim();
+                
+                if (value === '6436GF') {
+                    showFAQAdmin();
+                    this.value = '';
+                } else if (value) {
+                    userQuestions.push({
+                        question: value,
+                        date: new Date().toLocaleString('es-MX')
+                    });
+                    showNotification('✅ ¡Pregunta enviada!');
+                    this.value = '';
+                }
+            }
+        });
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3500);
+        }
+
+        // Cerrar modales al hacer click fuera
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // ========================================
+        // 🔍 FUNCIONES DE BÚSQUEDA EN ADMIN
+        // ========================================
+        
+        function filtrarTablaAdmin() {
+            const searchTerm = document.getElementById('searchAdminInput').value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                refreshAdminTable();
+                return;
+            }
+            
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = '';
+            
+            const jugadoresFiltrados = Object.values(playersData).filter(player => {
+                const id = player.Numero_ID.toLowerCase();
+                const nombre = player.Friend_code.toLowerCase();
+                return id.includes(searchTerm) || Friend.includes(searchTerm);
+            });
+            
+            jugadoresFiltrados.forEach(player => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="text" value="${player.Numero_ID}" data-id="${player.Numero_ID}" data-field="Numero_ID"></td>
+                    <td><input type="number" value="${player.Total_score}" data-id="${player.Numero_ID}" data-field="Total_score" style="width: 100%;"></td>
+                    <td><input type="text" value="${player.Descuento_Frito}" data-id="${player.Numero_ID}" data-field="Descuento_Frito"></td>
+                    <td><input type="text" value="${player.Premios_magicos}" data-id="${player.Numero_ID}" data-field="Premios_magicos"></td>
+                    <td><input type="text" value="${player.Credimiau}" data-id="${player.Numero_ID}" data-field="Credimiau"></td>
+                    <td><input type="text" value="${player.Friend_code}" data-id="${player.Numero_ID}" data-field="Friend_code"></td>
+                    <td><input type="text" value="${player.Nombre_frito}" data-id="${player.Numero_ID}" data-field="Nombre_frito"></td>
+                    <td><input type="text" value="${player.Emoji}" data-id="${player.Numero_ID}" data-field="Emoji" style="width: 50px;"></td>
+                    <td><input type="text" value="${player.Cumpleaños}" data-id="${player.Numero_ID}" data-field="Cumpleaños"></td>
+                    <td><button class="delete-btn" onclick="deletePlayer('${player.Numero_ID}')">🗑️</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            tbody.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', debounce(async function() {
+                    const playerId = this.dataset.id;
+                    const field = this.dataset.field;
+                    const value = this.type === 'number' ? parseInt(this.value) : this.value;
+                    
+                    if (playersData[playerId]) {
+                        playersData[playerId][field] = value;
+                        guardarEnCache('playersData', playersData);
+                        await guardarEnGoogleSheets(playersData[playerId]);
+                        showNotification('💾 Guardado');
+                    }
+                }, 1000));
+            });
+            
+            showNotification(`🔍 ${jugadoresFiltrados.length} resultados`);
+        }
+        
+        function limpiarFiltro() {
+            document.getElementById('searchAdminInput').value = '';
+            refreshAdminTable();
+            showNotification('✅ Mostrando todos');
+        }
+
+        // ========================================
+        // ⭐ INICIALIZACIÓN CON LAZY LOADING ⭐
+        // ========================================
+        
+        window.addEventListener('load', function() {
+            console.log('🚀 Iniciando Gatitxs Gaming...');
+            
+            // 1. ⭐ LIMPIAR CACHÉ VIEJO
+            limpiarCacheViejo();
+            
+            // 2. ⭐ CARGAR DESDE CACHÉ PRIMERO (rápido)
+            const cachedData = leerDeCache('playersData');
+            if (cachedData) {
+                playersData = cachedData;
+                console.log('✅ Datos cargados desde caché (rápido)');
+            }
+            
+            // 3. Crear estrellas (visual)
+            createStars();
+            
+            // 4. Mensaje de bienvenida
+            setTimeout(() => {
+                showNotification('✨ ¡Bienvenidx a Gatitxs Gaming!');
+            }, 500);
+            
+            // 5. ⭐ ACTUALIZAR DATOS EN BACKGROUND (lazy loading)
+            // Esto corre invisible mientras el usuario ya puede usar el sitio
+            setTimeout(() => {
+                console.log('🔄 Actualizando datos en background...');
+                // Aquí podrías cargar datos frescos de Google Sheets
+                // Por ahora solo actualizamos el timestamp del caché
+                guardarEnCache('playersData', playersData);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
